@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
       value = !value;
       if (value) {
         Provider.of<NotificationsService>(context, listen: false)
-            .showNotificationScheduling(CustomNotificaion(
+            .showNotification(CustomNotificaion(
           id: 1,
           title: 'Teste',
           body: 'Acesse o app',
