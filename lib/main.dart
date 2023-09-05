@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:notifications/services/firebase_messaging_service.dart';
 import 'package:notifications/services/notifications_service.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -13,7 +14,10 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     Provider<NotificationsService>(
       create: (context) => NotificationsService(),
-    )
+    ),
+    Provider<FirebaseMessagingService>(
+        create: (context) =>
+            FirebaseMessagingService(context.read<NotificationsService>()))
   ], child: const MyApp()));
 }
 
@@ -27,13 +31,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    initializeFirebaseMessaging();
     checkForNotification();
     super.initState();
   }
 
+  initializeFirebaseMessaging() async {
+    await Provider.of<FirebaseMessagingService>(context, listen: false)
+        .initialize();
+  }
+
   checkForNotification() async {
     await Provider.of<NotificationsService>(context, listen: false)
-        .checkForNotification();
+        .requestPermission();
   }
 
   @override
